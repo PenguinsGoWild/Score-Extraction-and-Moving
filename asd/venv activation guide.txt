@@ -1,0 +1,4 @@
+if you somehow forgor
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
+.\pymupdf-venv\Scripts\activate
+python test.py
