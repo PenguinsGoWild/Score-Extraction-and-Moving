@@ -1,0 +1,13 @@
+.vscode/
+__pycache__/
+myenv/
+.pytest_cache/
+
+asd/memory/*
+asd/memory/.gitkeep
+
+asd/scores/*
+asd/scores/.gitkeep
+
+asd/unsorted/*
+asd/unsorted/.gitkeep

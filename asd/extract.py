@@ -8,13 +8,15 @@ from tkinter import Tk, Label
 root = Tk()
 root.title("Score Viewer")
 
-
-filename = "reference.pdf"
+extract = "zui"
+if (os.path.exists("reference.pdf")):
+    filename = "reference.pdf"
+else:
+    filename = extract + ".pdf"
 inputfile = "input2.txt"
-extract = "score name"
 concert = "concert name"
 cwd = os.getcwd()
-path = os.path.join(cwd, "scores")
+path = os.path.join(cwd, "scores\\")
 
 f = open(inputfile)
 g = GenDict()
@@ -41,33 +43,69 @@ for page in doc:
     acc += 1
     instruments.append("")
 
-blank_img = Image.new("RGB", (600, 800), color = "white")
+blank_img = Image.new("RGB", (800, 600), color = "white")
 tk_img = ImageTk.PhotoImage(blank_img)
+
 label = Label(root, image = tk_img)
 label.pack()
 label.image = tk_img
+root.geometry(f"{800}x{600}")
+#root.resizable(False, False)
 root.update()
+scaling_factor = 0.8
+window_width = root.winfo_width()
+window_height = root.winfo_height()
 
-for i in range(0, acc, offset):
-    test = doc[i].get_text()
-    for j in set1:
-        if (j in test):
-            instruments[i] = j
-    while(instruments[i] == ""):
-        pix = doc[i].get_pixmap()
-        pil_img = pix.pil_image()
-        tk_img = ImageTk.PhotoImage(pil_img)
+mem = extract + "_name_storage.txt"
+mem_path = os.path.join(cwd, "memory")
+os.makedirs(mem_path, exist_ok = True)
+mem_path = os.path.join(cwd, "memory", mem)
+#mem_path = mem_path + mem
+try:
+    with open(mem_path, "x") as f:
+        print(f"no memory exists, creating new one")
+except FileExistsError: 
+    print(f"memory exists, not creating new one")
 
-        label.configure(image=tk_img)
-        label.image = tk_img
-        root.update()
-        my = input(f"page {i + 1} instrument cannot be found, manually input:")
-        instruments[i] = my
-    if offset > 1:
-        for y in range(i+1, i + offset):
-            if y < acc:
-                instruments[y] = instruments[i]
-    print(f"pages {i + 1} to {i + offset} " + instruments[i] + " done\n")
+
+with open(mem_path, "r+") as memo:
+    for i in range(0, acc, offset):
+        test = doc[i].get_text()
+        line = memo.readline()
+        if (line):
+            print(f"using {line.strip()} from memory")
+            instruments[i] = line.strip()
+        else:
+            for j in set1:
+                if (j in test and j != ""):
+                    instruments[i] = j
+                    memo.write(j + "\n")
+                    print(f"wrote {j} to memory successfully")
+            while(instruments[i] == ""):
+                pix = doc[i].get_pixmap(matrix = pymupdf.Matrix(scaling_factor, scaling_factor))
+                pil_img = pix.pil_image()
+
+                # Resize image
+                resized_img = pil_img.resize((window_height, window_width), Image.Resampling.LANCZOS)
+
+                # Convert the resized image to a format Tkinter can use
+                tk_img = ImageTk.PhotoImage(resized_img)
+
+                # Center the image in the window
+                label.place(relx=0.5, rely=0.5, anchor="center")
+
+                label.configure(image=tk_img)
+                label.image = tk_img
+                #root.geometry(f"{pil_img.width}x{pil_img.height}")
+                root.geometry(f"{600}x{800}")
+                root.update_idletasks()
+                my = input(f"page {i + 1} instrument cannot be found, manually input:")
+                instruments[i] = my
+        if offset > 1:
+            for y in range(i+1, i + offset):
+                if y < acc:
+                    instruments[y] = instruments[i]
+        print(f"pages {i + 1} to {i + offset} " + instruments[i] + " done\n")
 doc.close()
 root.destroy()
 
