@@ -18,7 +18,8 @@ dir_list = os.listdir(files)
 
 set1 = set() 
 for line in f:
-    set1.add(line.rstrip())
+    if (line.strip() != ".gitkeep"):
+        set1.add(line.rstrip())
 f.close()
     
 #os.makedirs(path, exist_ok = True)
