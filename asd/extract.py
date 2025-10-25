@@ -8,7 +8,7 @@ from tkinter import Tk, Label
 root = Tk()
 root.title("Score Viewer")
 
-extract = "zui"
+extract = "filename here"
 if (os.path.exists("reference.pdf")):
     filename = "reference.pdf"
 else:
