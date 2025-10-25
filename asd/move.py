@@ -31,7 +31,7 @@ for part in dir_list:
     pathfile = path + f"{foldersdict[part]}\\{concert}\\{extract}"
     os.makedirs(pathfile, exist_ok = True)
     shutil.move(f"{files}\\{part}", f"{pathfile}\\{part}")
-    print(f"moved {part}")
+    print(f"moved {part} to {foldersdict[part]}\\{concert}\\{extract}")
 
 print("done")
     

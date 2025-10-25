@@ -100,6 +100,9 @@ with open(mem_path, "r+") as memo:
                 root.geometry(f"{600}x{800}")
                 root.update_idletasks()
                 my = input(f"page {i + 1} instrument cannot be found, manually input:")
+                if (my != ""):
+                    memo.write(my + "\n")
+                    print(f"wrote {my} to memory successfully")
                 instruments[i] = my
         if offset > 1:
             for y in range(i+1, i + offset):
